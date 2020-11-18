@@ -1,2 +1,8 @@
-# actions-toolkit
-A Python toolkit for building GitHub Actions
+# Actions Toolkit
+
+A Python toolkit for building GitHub Actions.
+
+
+## License
+
+MIT
