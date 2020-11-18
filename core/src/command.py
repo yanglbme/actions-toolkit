@@ -5,6 +5,16 @@ from utils import to_command_value
 
 
 def issue_command(command: str, properties: dict, message):
+    """
+    Commands
+
+    Command Format:
+        ::name key=value,key=value::message
+
+    Examples:
+        ::warning::This is the message
+        ::set-env name=MY_VAR::some value
+    """
     cmd = Command(command, properties, message)
     sys.stdout.write(str(cmd) + os.linesep)
 
@@ -21,7 +31,7 @@ class Command:
     message: str
     properties: dict
 
-    def __init__(self, command: str, properties: dict, message: str):
+    def __init__(self, command: str, properties: dict, message):
         if not command:
             command = 'missing.command'
         self.command = command
@@ -46,9 +56,9 @@ class Command:
 
 def escape_data(s) -> str:
     return to_command_value(s).replace('%', '%25') \
-        .replace('\\r', '%0D').replace('\\n', '%0A')
+        .replace('\r', '%0D').replace('\n', '%0A')
 
 
 def escape_property(s) -> str:
-    return to_command_value(s).replace('%', '%25').replace('\\r', '%0D') \
-        .replace('\\n', '%0A').replace(':', '%3A').replace(',', '%2C')
+    return to_command_value(s).replace('%', '%25').replace('\r', '%0D') \
+        .replace('\n', '%0A').replace(':', '%3A').replace(',', '%2C')

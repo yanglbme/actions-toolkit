@@ -2,7 +2,7 @@ import json
 
 
 def to_command_value(input) -> str:
-    if not input:
+    if input is None:
         return ''
     if isinstance(input, str):
         return str(input)
