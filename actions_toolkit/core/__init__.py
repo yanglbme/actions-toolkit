@@ -2,9 +2,9 @@ import enum
 import os
 import sys
 
-from actions.core.command import issue_command, issue
-from actions.core.file_command import issue_command as issue_file_command
-from actions.core.utils import to_command_value
+from actions_toolkit.core.command import issue_command, issue
+from actions_toolkit.core.file_command import issue_command as issue_file_command
+from actions_toolkit.core.utils import to_command_value
 
 
 @enum.unique
@@ -24,7 +24,7 @@ class ExitStatus(enum.IntEnum):
 
 def export_variable(name: str, val):
     """
-    Sets env variable for this action and future actions in the job
+    Sets env variable for this action and future actions_toolkit in the job
     :param name: the name of the variable to set
     :param val: the value of the variable. Non-string values will be converted to a string via json.dumps
     :return: void
@@ -52,7 +52,7 @@ def set_secret(secret: str):
 
 def add_path(input_path: str):
     """
-    Prepends inputPath to the PATH (for this action and future actions)
+    Prepends inputPath to the PATH (for this action and future actions_toolkit)
     :param input_path: value of the path
     :return: void
     """

@@ -8,7 +8,7 @@
 
 ```python
 >>> import os
->>> from actions import core
+>>> from actions_toolkit import core
 >>> os.environ['INPUT_NAME'] = 'Actions Toolkit'
 >>> core.get_input('name')
 'Actions Toolkit'
