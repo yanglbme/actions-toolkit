@@ -1,6 +1,6 @@
 # Actions Toolkit
 
-**Actions Toolkit** is A GitHub Actions Development Tools in Python.
+The GitHub Actions ToolKit provides a set of packages to make creating actions easier in Python.
 
 [![Downloads](https://pepy.tech/badge/actions-toolkit/month)](https://pepy.tech/project/actions-toolkit/month)
 [![Supported Versions](https://img.shields.io/pypi/pyversions/actions-toolkit.svg)](https://pypi.org/project/actions-toolkit)

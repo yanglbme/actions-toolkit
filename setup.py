@@ -1,12 +1,12 @@
 import setuptools
 
-with open('README.md', 'r') as fh:
-    long_description = fh.read()
+with open('README.md', 'r') as f:
+    long_description = f.read()
 
 setuptools.setup(
     name='actions-toolkit',
-    version='0.0.3',
-    description='A Python toolkit for building GitHub Actions',
+    version='0.0.4',
+    description='🛠 The GitHub ToolKit for developing GitHub Actions in Python.',
     author='yanglbme',
     author_email='contact@yanglibin.info',
     url='https://github.com/yanglbme/actions-toolkit',
@@ -16,6 +16,7 @@ setuptools.setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
