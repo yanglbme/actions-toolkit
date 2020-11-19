@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='actions-toolkit',
-    version='0.0.1',
+    version='0.0.2',
     description='A Python toolkit for building GitHub Actions',
     author='yanglbme',
     author_email='contact@yanglibin.info',
