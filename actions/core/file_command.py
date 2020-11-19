@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from utils import to_command_value
+from actions.core.utils import to_command_value
 
 
 def issue_command(command: str, message):

@@ -1,9 +1,21 @@
+import enum
 import os
 import sys
 
-from command import issue_command, issue
-from file_command import issue_command as issue_file_command
-from utils import to_command_value
+from actions.core.command import issue_command, issue
+from actions.core.file_command import issue_command as issue_file_command
+from actions.core.utils import to_command_value
+
+
+@enum.unique
+class ExitStatus(enum.IntEnum):
+    """Portable definitions for the standard POSIX exit codes."""
+
+    success = 0
+    """Indicates successful program completion."""
+
+    failure = 1
+    """Indicates unsuccessful program completion in a general sense."""
 
 
 def export_variable(name: str, val):
