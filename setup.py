@@ -5,8 +5,10 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='actions-toolkit',
-    version='0.0.4',
+    version='0.0.5',
     description='🛠 The GitHub ToolKit for developing GitHub Actions in Python.',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='yanglbme',
     author_email='contact@yanglibin.info',
     url='https://github.com/yanglbme/actions-toolkit',

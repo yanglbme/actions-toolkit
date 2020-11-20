@@ -32,4 +32,4 @@ Action Toolkit officially supports Python 3.6+.
 
 ## License
 
-MIT
+The scripts and documentation in this project are released under the [MIT License](LICENSE).
