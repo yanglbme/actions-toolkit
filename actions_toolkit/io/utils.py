@@ -50,6 +50,7 @@ async def is_directory(fs_path: str, use_stat: bool = False):
 
 
 async def is_rooted(p: str) -> bool:
+    p = normalize_separators(p)
     if not p:
         raise Exception('is_rooted() parameter "p" cannot be empty')
 
@@ -91,4 +92,19 @@ async def try_get_executable_path(file_path: str, extensions: list[str]):
     if stats and Path(file_path).is_file():
         if IS_WINDOWS:
             upper_ext = Path(file_path).suffix.upper()
-            pass
+            for valid_ext in extensions:
+                if valid_ext.upper() == upper_ext:
+                    return file_path
+        else:
+            if is_unix_executable(file_path):
+                return file_path
+    return ''
+
+
+def normalize_separators(p: str) -> str:
+    p = p or ''
+    return os.path.normpath(p)
+
+
+def is_unix_executable(file_path) -> bool:
+    return os.access(file_path, os.X_OK)
