@@ -6,6 +6,7 @@ The GitHub Actions ToolKit provides a set of packages to make creating actions e
 [![Supported Versions](https://img.shields.io/pypi/pyversions/actions-toolkit.svg)](https://pypi.org/project/actions-toolkit)
 [![Pypi Versions](https://img.shields.io/pypi/v/actions-toolkit.svg)](https://pypi.python.org/pypi/actions-toolkit)
 [![Contributors](https://img.shields.io/github/contributors/yanglbme/actions-toolkit.svg)](https://github.com/yanglbme/actions-toolkit/graphs/contributors)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit?ref=badge_shield)
 
 ```python
 >>> import os
@@ -34,3 +35,5 @@ Action Toolkit officially supports Python 3.6+.
 ## License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE).
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit?ref=badge_large)
