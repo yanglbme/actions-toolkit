@@ -31,10 +31,8 @@ class Command:
     message: str
     properties: dict
 
-    def __init__(self, command: str, properties: dict, message):
-        if not command:
-            command = 'missing.command'
-        self.command = command
+    def __init__(self, command: str, properties: dict, message: str):
+        self.command = command or 'missing.command'
         self.properties = properties
         self.message = message
 

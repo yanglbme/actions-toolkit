@@ -1,21 +1,33 @@
 import enum
 import os
 import sys
+from typing import Optional, List
 
 from actions_toolkit.core.command import issue_command, issue
 from actions_toolkit.core.file_command import issue_command as issue_file_command
-from actions_toolkit.core.utils import to_command_value
+from actions_toolkit.core.utils import to_command_value, AnnotationProperties, to_command_properties
+
+
+class InputOptions:
+    """Interface for getInput options"""
+
+    def __init__(self, required: Optional[bool] = False, trim_whitespace: Optional[bool] = True):
+        """Optional. Whether the input is required. If required and not present, will throw. Defaults to false"""
+        self.required = required
+
+        """Optional. Whether leading/trailing whitespace will be trimmed for the input. Defaults to true"""
+        self.trim_whitespace = trim_whitespace
 
 
 @enum.unique
-class ExitStatus(enum.IntEnum):
-    """Portable definitions for the standard POSIX exit codes."""
+class ExitCode(enum.IntEnum):
+    """The code to exit an action"""
 
+    """A code indicating that the action was successful"""
     success = 0
-    """Indicates successful program completion."""
 
+    """A code indicating that the action was a failure"""
     failure = 1
-    """Indicates unsuccessful program completion in a general sense."""
 
 
 # -----------------------------------------------------------------------
@@ -64,18 +76,42 @@ def add_path(input_path: str):
     os.environ.setdefault('PATH', f'{input_path}{os.pathsep}{os.environ.get("PATH")}')
 
 
-def get_input(name: str, required: bool = True) -> str:
+def get_input(name: str, options: InputOptions = None) -> str:
     """
-    Gets the value of an input. The value is also trimmed.
-    :param name: name of the input to get
-    :param required: if required or not
-    :return: string
+    Gets the value of an input.
+    Unless trimWhitespace is set to false in InputOptions, the value is also trimmed.
+    Returns an empty string if the value is not defined.
     """
-    name = f'INPUT_{name.replace(" ", "_").upper()}'
-    val = os.environ.get(name) or ''
-    if required and not val:
+    val = os.environ.get(f'INPUT_{name.replace(" ", "_").upper()}') or ''
+    if options and options.required and not val:
         raise Exception(f'Input required and not supplied: {name}')
-    return val.strip()
+    if options and not options.trim_whitespace:
+        return val
+
+
+def get_multiline_input(name: str, options: InputOptions = None) -> List[str]:
+    """
+    Gets the values of an multiline input.  Each value is also trimmed.
+    """
+    return list(filter(lambda x: x != '', get_input(name, options).split("\n")))
+
+
+def get_boolean_input(name: str, options: InputOptions = None) -> bool:
+    """
+    Gets the input value of the boolean type in the YAML 1.2 "core schema" specification.
+    Support boolean input list: `true | True | TRUE | false | False | FALSE` .
+    The return value is also in boolean type.
+    ref: https://yaml.org/spec/1.2/spec.html#id2804923
+    """
+    true_value = ['true', 'True', 'TRUE']
+    false_value = ['false', 'False', 'FALSE']
+    val = get_input(name, options)
+    if val in true_value:
+        return True
+    if val in false_value:
+        return False
+    raise TypeError(f'Input does not meet YAML 1.2 "Core Schema" specification: {name}\n'
+                    f'Support boolean input list: `true | True | TRUE | false | False | FALSE`')
 
 
 def set_output(name: str, value):
@@ -108,7 +144,7 @@ def set_failed(message: str):
     :return: void
     """
     error(message)
-    sys.exit(1)
+    sys.exit(ExitCode.failure.value)
 
 
 def is_debug() -> bool:
@@ -125,22 +161,31 @@ def debug(message: str):
     issue_command('debug', {}, message)
 
 
-def error(message: str):
+def error(message: str, properties: AnnotationProperties = None):
     """
     Adds an error issue
     :param message: error issue message. Errors will be converted to string via str()
-    :return: void
+    :param properties: optional properties to add to the annotation.
     """
-    issue('error', message)
+    issue_command('error', to_command_properties(properties), message)
 
 
-def warning(message: str):
+def warning(message: str, properties: AnnotationProperties = None):
     """
-    Adds an warning issue
+    Adds a warning issue
     :param message: warning issue message. Errors will be converted to string via str()
-    :return: void
+    :param properties: optional properties to add to the annotation.
     """
-    issue('warning', message)
+    issue_command('warning', to_command_properties(properties), message)
+
+
+def notice(message: str, properties: AnnotationProperties = None):
+    """
+    Adds a notice issue
+    :param message: notice issue message. Errors will be converted to string via str()
+    :param properties: optional properties to add to the annotation.
+    """
+    issue_command('notice', to_command_properties(properties), message)
 
 
 def info(message: str):

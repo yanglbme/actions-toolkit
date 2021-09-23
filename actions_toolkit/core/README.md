@@ -12,18 +12,27 @@ from actions_toolkit import core
 
 #### Inputs/Outputs
 
-Action inputs can be read with `get_input`. Outputs can be set with `set_output` which makes them available to be mapped into inputs of other actions to ensure they are decoupled.
+Action inputs can be read with `get_input` which returns a `string` or `get_boolean_input` which parses a boolean based
+on the [yaml 1.2 specification](https://github.com/actions/toolkit/tree/main/packages/core). If `required` set to be
+false, the input should have a default value in `action.yml`.
+
+Outputs can be set with `set_output` which makes them available to be mapped into inputs of other actions to ensure they
+are decoupled.
 
 ```python
 from actions_toolkit import core
+from actions_toolkit.core import InputOptions
 
-my_input = core.get_input('input_name', required=True)
+my_input = core.get_input('input_name', InputOptions(required=True))
+my_boolean_input = core.get_boolean_input('boolean_input_name', InputOptions(required=True))
+my_multiline_input = core.get_multiline_input('multiline_input_name', InputOptions(required=True))
 core.set_output('output_key', 'output_val')
 ```
 
 #### Exporting variables
 
-Since each step runs in a separate process, you can use `export_variable` to add it to this step and future steps environment blocks.
+Since each step runs in a separate process, you can use `export_variable` to add it to this step and future steps
+environment blocks.
 
 ```python
 from actions_toolkit import core
@@ -43,7 +52,8 @@ core.set_secret('my_password')
 
 #### PATH Manipulation
 
-To make a tool's path available in the path for the remainder of the job (without altering the machine or containers state), use `add_path`. The runner will prepend the path given to the jobs PATH.
+To make a tool's path available in the path for the remainder of the job (without altering the machine or containers
+state), use `add_path`. The runner will prepend the path given to the jobs PATH.
 
 ```python
 from actions_toolkit import core
@@ -53,7 +63,8 @@ core.add_path('/path/to/my_tool')
 
 #### Exit codes
 
-You should use this library to set the failing exit code for your action. If status is not set and the script runs to completion, that will lead to a success.
+You should use this library to set the failing exit code for your action. If status is not set and the script runs to
+completion, that will lead to a success.
 
 ```python
 from actions_toolkit import core
@@ -62,6 +73,7 @@ try:
     # Do stuff
     pass
 except Exception as e:
+    # setFailed logs the message and sets a failing exit code
     core.set_failed(f'Action failed with error {e}')
 ```
 
@@ -69,7 +81,9 @@ Note that `set_neutral` is not yet implemented in actions V2 but equivalent func
 
 #### Logging
 
-Finally, this library provides some utilities for logging. Note that debug logging is hidden from the logs by default. This behavior can be toggled by enabling the [Step Debug Logs](https://github.com/actions/toolkit/blob/main/docs/action-debugging.md#step-debug-logs).
+Finally, this library provides some utilities for logging. Note that debug logging is hidden from the logs by default.
+This behavior can be toggled by enabling
+the [Step Debug Logs](https://github.com/actions/toolkit/blob/main/docs/action-debugging.md#step-debug-logs).
 
 ```python
 from actions_toolkit import core
@@ -80,16 +94,18 @@ try:
 
     if not my_input:
         core.warning('my_input was not set')
-    
+
     if core.is_debug():
         # curl -v https://github.com
         pass
     else:
         # curl https://github.com
         pass
-    
+
     # Do stuff
     core.info('Output to the actions build log')
+
+    core.notice('This is a message that will also emit an annotation')
 except Exception as e:
     core.error(f'Error {e}, action may still succeed though')
 ```
@@ -110,7 +126,9 @@ core.end_group()
 
 #### Styling output
 
-Colored output is supported in the Action logs via standard [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code). 3/4 bit, 8 bit and 24 bit colors are all supported.
+Colored output is supported in the Action logs via
+standard [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code). 3/4 bit, 8 bit and 24 bit colors are all
+supported.
 
 Foreground colors:
 
@@ -133,7 +151,7 @@ Background colors:
 from actions_toolkit import core
 
 # 3/4 bit
-core.info('\u001b[43mThis background will be yellow');
+core.info('\u001b[43mThis background will be yellow')
 
 # 8 bit
 core.info('\u001b[48;5;6mThis background will be cyan')
@@ -157,7 +175,7 @@ ANSI escape codes can be combined with one another:
 ```python
 from actions_toolkit import core
 
-core.info('\u001b[31;46mRed foreground with a cyan background and \u001b[1mbold text at the end');
+core.info('\u001b[31;46mRed foreground with a cyan background and \u001b[1mbold text at the end')
 ```
 
 > Note: Escape codes reset at the start of each line
