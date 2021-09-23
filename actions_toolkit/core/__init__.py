@@ -76,7 +76,7 @@ def add_path(input_path: str):
     os.environ.setdefault('PATH', f'{input_path}{os.pathsep}{os.environ.get("PATH")}')
 
 
-def get_input(name: str, options: InputOptions = None) -> str:
+def _get_input(name: str, options: InputOptions = None) -> str:
     """
     Gets the value of an input.
     Unless trimWhitespace is set to false in InputOptions, the value is also trimmed.
@@ -87,16 +87,27 @@ def get_input(name: str, options: InputOptions = None) -> str:
         raise Exception(f'Input required and not supplied: {name}')
     if options and not options.trim_whitespace:
         return val
+    return val.strip()
 
 
-def get_multiline_input(name: str, options: InputOptions = None) -> List[str]:
+def get_input(name: str, required=False, trim_whitespace=True) -> str:
+    options = InputOptions(required, trim_whitespace)
+    return _get_input(name, options)
+
+
+def _get_multiline_input(name: str, options: InputOptions = None) -> List[str]:
     """
     Gets the values of an multiline input.  Each value is also trimmed.
     """
-    return list(filter(lambda x: x != '', get_input(name, options).split("\n")))
+    return list(filter(lambda x: x != '', _get_input(name, options).split("\n")))
 
 
-def get_boolean_input(name: str, options: InputOptions = None) -> bool:
+def get_multiline_input(name: str, required=False, trim_whitespace=True) -> List[str]:
+    options = InputOptions(required, trim_whitespace)
+    return _get_multiline_input(name, options)
+
+
+def _get_boolean_input(name: str, options: InputOptions = None) -> bool:
     """
     Gets the input value of the boolean type in the YAML 1.2 "core schema" specification.
     Support boolean input list: `true | True | TRUE | false | False | FALSE` .
@@ -105,13 +116,18 @@ def get_boolean_input(name: str, options: InputOptions = None) -> bool:
     """
     true_value = ['true', 'True', 'TRUE']
     false_value = ['false', 'False', 'FALSE']
-    val = get_input(name, options)
+    val = _get_input(name, options)
     if val in true_value:
         return True
     if val in false_value:
         return False
     raise TypeError(f'Input does not meet YAML 1.2 "Core Schema" specification: {name}\n'
                     f'Support boolean input list: `true | True | TRUE | false | False | FALSE`')
+
+
+def get_boolean_input(name: str, required=False, trim_whitespace=True) -> bool:
+    options = InputOptions(required, trim_whitespace)
+    return _get_boolean_input(name, options)
 
 
 def set_output(name: str, value):

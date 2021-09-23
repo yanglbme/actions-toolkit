@@ -21,11 +21,10 @@ are decoupled.
 
 ```python
 from actions_toolkit import core
-from actions_toolkit.core import InputOptions
 
-my_input = core.get_input('input_name', InputOptions(required=True))
-my_boolean_input = core.get_boolean_input('boolean_input_name', InputOptions(required=True))
-my_multiline_input = core.get_multiline_input('multiline_input_name', InputOptions(required=True))
+my_input = core.get_input('input_name', required=True)
+my_boolean_input = core.get_boolean_input('boolean_input_name', required=True)
+my_multiline_input = core.get_multiline_input('multiline_input_name', required=True)
 core.set_output('output_key', 'output_val')
 ```
 
@@ -73,7 +72,7 @@ try:
     # Do stuff
     pass
 except Exception as e:
-    # setFailed logs the message and sets a failing exit code
+    # set_failed logs the message and sets a failing exit code
     core.set_failed(f'Action failed with error {e}')
 ```
 
