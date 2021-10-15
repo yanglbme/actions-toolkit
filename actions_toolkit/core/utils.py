@@ -1,11 +1,10 @@
 import json
-from typing import Optional
 
 
 class AnnotationProperties:
-    def __init__(self, title: Optional[str], file: Optional[str],
-                 start_line: Optional[int], end_line: Optional[int],
-                 start_column: Optional[int], end_column: Optional[int]):
+    def __init__(self, title: str = None, file: str = None,
+                 start_line: int = None, end_line: int = None,
+                 start_column: int = None, end_column: int = None):
         self.title = title
         self.file = file
         self.start_line = start_line
