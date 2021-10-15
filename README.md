@@ -8,7 +8,7 @@ The GitHub Actions ToolKit provides a set of packages to make creating actions e
 [![Contributors](https://img.shields.io/github/contributors/yanglbme/actions-toolkit.svg)](https://github.com/yanglbme/actions-toolkit/graphs/contributors)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit?ref=badge_shield)
 
-```bash
+```python
 >>> import os
 >>> from actions_toolkit import core
 >>> os.environ['INPUT_NAME'] = 'Actions Toolkit'

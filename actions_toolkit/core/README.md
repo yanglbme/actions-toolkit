@@ -123,6 +123,46 @@ core.end_group()
 # TODO
 ```
 
+#### Annotations
+
+This library has 3 methods that will
+produce [annotations](https://docs.github.com/en/rest/reference/checks#create-a-check-run).
+
+```python
+from actions_toolkit import core
+
+core.error('This is a bad error. This will also fail the build.')
+
+core.warning('Something went wrong, but it\'s not bad enough to fail the build.')
+
+core.notice('Something happened that you might want to know about.')
+```
+
+These will surface to the UI in the Actions page and on Pull Requests. They look something like this:
+
+![annotations](https://cdn.jsdelivr.net/gh/yanglbme/actions-toolkit@main/docs/assets/annotations.png)
+
+These annotations can also be attached to particular lines and columns of your source files to show exactly where a
+problem is occuring.
+
+These options are:
+
+```python
+from typing import Optional
+
+
+class AnnotationProperties:
+    def __init__(self, title: Optional[str], file: Optional[str],
+                 start_line: Optional[int], end_line: Optional[int],
+                 start_column: Optional[int], end_column: Optional[int]):
+        self.title = title
+        self.file = file
+        self.start_line = start_line
+        self.end_line = end_line
+        self.start_column = start_column
+        self.end_column = end_column
+```
+
 #### Styling output
 
 Colored output is supported in the Action logs via
