@@ -1,7 +1,7 @@
 import enum
 import os
 import sys
-from typing import List
+from typing import List, Union
 
 from actions_toolkit.core.command import issue_command, issue
 from actions_toolkit.core.file_command import issue_command as issue_file_command
@@ -76,13 +76,13 @@ def add_path(input_path: str):
     os.environ.setdefault('PATH', f'{input_path}{os.pathsep}{os.environ.get("PATH")}')
 
 
-def get_input(name: str, **kwargs) -> str:
+def get_input(name: str, **options) -> str:
     """
     Gets the value of an input.
     Unless trimWhitespace is set to false in InputOptions, the value is also trimmed.
     Returns an empty string if the value is not defined.
     """
-    options = InputOptions(**kwargs)
+    options = InputOptions(**options)
     val = os.environ.get(f'INPUT_{name.replace(" ", "_").upper()}') or ''
     if options.required and not val:
         raise Exception(f'Input required and not supplied: {name}')
@@ -91,14 +91,14 @@ def get_input(name: str, **kwargs) -> str:
     return val.strip()
 
 
-def get_multiline_input(name: str, **kwargs) -> List[str]:
+def get_multiline_input(name: str, **options) -> List[str]:
     """
     Gets the values of an multiline input.  Each value is also trimmed.
     """
-    return list(filter(lambda x: x != '', get_input(name, **kwargs).split("\n")))
+    return list(filter(lambda x: x != '', get_input(name, **options).split("\n")))
 
 
-def get_boolean_input(name: str, **kwargs) -> bool:
+def get_boolean_input(name: str, **options) -> bool:
     """
     Gets the input value of the boolean type in the YAML 1.2 "core schema" specification.
     Support boolean input list: `true | True | TRUE | false | False | FALSE` .
@@ -107,7 +107,7 @@ def get_boolean_input(name: str, **kwargs) -> bool:
     """
     true_value = ['true', 'True', 'TRUE']
     false_value = ['false', 'False', 'FALSE']
-    val = get_input(name, **kwargs)
+    val = get_input(name, **options)
     if val in true_value:
         return True
     if val in false_value:
@@ -123,6 +123,7 @@ def set_output(name: str, value):
     :param value: value to store. Non-string values will be converted to a string via json.dumps
     :return: void
     """
+    sys.stdout.write(os.linesep)
     issue_command('set-output', dict(name=name), value)
 
 
@@ -138,7 +139,7 @@ def set_command_echo(enabled: bool):
 # Results
 # -----------------------------------------------------------------------
 
-def set_failed(message: str):
+def set_failed(message: Union[str, Exception]):
     """
     Sets the action status to failed.
     When the action exits it will be with an exit code of 1
@@ -163,30 +164,34 @@ def debug(message: str):
     issue_command('debug', {}, message)
 
 
-def error(message: str, **kwargs):
+def error(message: Union[str, Exception], **properties):
     """
     Adds an error issue
     :param message: error issue message. Errors will be converted to string via str()
     """
-    properties = AnnotationProperties(**kwargs)
+    properties = AnnotationProperties(**properties)
+    if isinstance(message, Exception):
+        message = str(message)
     issue_command('error', to_command_properties(properties), message)
 
 
-def warning(message: str, **kwargs):
+def warning(message: Union[str, Exception], **properties):
     """
     Adds a warning issue
     :param message: warning issue message. Errors will be converted to string via str()
     """
-    properties = AnnotationProperties(**kwargs)
+    properties = AnnotationProperties(**properties)
+    if isinstance(message, Exception):
+        message = str(message)
     issue_command('warning', to_command_properties(properties), message)
 
 
-def notice(message: str, **kwargs):
+def notice(message: Union[str, Exception], **properties):
     """
     Adds a notice issue
     :param message: notice issue message. Errors will be converted to string via str()
     """
-    properties = AnnotationProperties(**kwargs)
+    properties = AnnotationProperties(**properties)
     issue_command('notice', to_command_properties(properties), message)
 
 
