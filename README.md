@@ -12,7 +12,7 @@ The GitHub Actions ToolKit provides a set of packages to make creating actions e
 >>> import os
 >>> from actions_toolkit import core
 >>> os.environ['INPUT_NAME'] = 'Actions Toolkit'
->>> core.get_input('name')
+>>> core.get_input('name', required=True)
 'Actions Toolkit'
 >>> core.error('Something went wrong.')
 ::error::Something went wrong.
