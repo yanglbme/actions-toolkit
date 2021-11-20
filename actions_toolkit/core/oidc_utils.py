@@ -40,10 +40,12 @@ class OidcClient:
     @staticmethod
     def get_id_token(audience: str = None):
         try:
+            # New ID Token is requested from action service
             id_token_url = OidcClient.get_id_token_url()
             if audience:
                 encoded_audience = quote(audience)
                 id_token_url = f'{id_token_url}&audience={encoded_audience}'
+
             id_token = OidcClient.get_call(id_token_url)
             set_secret(id_token)
             return id_token
