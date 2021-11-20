@@ -8,6 +8,8 @@ from functools import wraps, partial
 from pathlib import Path
 from stat import S_ISDIR
 
+from typing import List
+
 IS_WINDOWS = platform.system() == 'Windows'
 
 
@@ -82,7 +84,7 @@ async def mkdir_p(fs_path: str, max_depth: int = 1000, depth: int = 1):
             raise e
 
 
-async def try_get_executable_path(file_path: str, extensions: list[str]):
+async def try_get_executable_path(file_path: str, extensions: List[str]):
     stats = None
     try:
         stats = await stat(file_path)

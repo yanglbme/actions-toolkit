@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='actions-toolkit',
-    version='0.1.1',
+    version='0.1.2',
     description='🛠 The GitHub ToolKit for developing GitHub Actions in Python.',
     long_description=long_description,
     long_description_content_type='text/markdown',
