@@ -3,8 +3,6 @@ from urllib.parse import quote
 
 import requests
 
-from actions_toolkit.core import set_secret
-
 
 class OidcClient:
 
@@ -47,7 +45,6 @@ class OidcClient:
                 id_token_url = f'{id_token_url}&audience={encoded_audience}'
 
             id_token = OidcClient.get_call(id_token_url)
-            set_secret(id_token)
             return id_token
         except Exception as e:
             raise Exception(f'Error message: {str(e)}')

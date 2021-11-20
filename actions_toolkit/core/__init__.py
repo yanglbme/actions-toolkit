@@ -261,4 +261,6 @@ def get_state(name: str) -> str:
 
 
 def get_id_token(aud: str = None) -> str:
-    return OidcClient.get_id_token(aud)
+    id_token = OidcClient.get_id_token(aud)
+    set_secret(id_token)
+    return id_token
