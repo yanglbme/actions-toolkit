@@ -5,6 +5,7 @@ from typing import List, Union
 
 from actions_toolkit.core.command import issue_command, issue
 from actions_toolkit.core.file_command import issue_command as issue_file_command
+from actions_toolkit.core.oidc_utils import OidcClient
 from actions_toolkit.core.utils import to_command_value, AnnotationProperties, to_command_properties
 
 
@@ -257,3 +258,7 @@ def get_state(name: str) -> str:
     :return: string
     """
     return os.environ.get(f'STATE_{name}') or ''
+
+
+def get_id_token(aud: str = None) -> str:
+    return OidcClient.get_id_token(aud)

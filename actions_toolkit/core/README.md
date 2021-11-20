@@ -23,6 +23,7 @@ are decoupled.
 from actions_toolkit import core
 
 my_input = core.get_input('input_name', required=True)
+my_second_input = core.get_input('input_name', required=True, trim_whitespace=False)
 my_boolean_input = core.get_boolean_input('boolean_input_name', required=True)
 my_multiline_input = core.get_multiline_input('multiline_input_name', required=True)
 core.set_output('output_key', 'output_val')
@@ -73,7 +74,7 @@ try:
     pass
 except Exception as e:
     # set_failed logs the message and sets a failing exit code
-    core.set_failed(f'Action failed with error {e}')
+    core.set_failed(f'Action failed with error {str(e)}')
 ```
 
 Note that `set_neutral` is not yet implemented in actions V2 but equivalent functionality is being planned.
@@ -106,21 +107,30 @@ try:
 
     core.notice('This is a message that will also emit an annotation')
 except Exception as e:
-    core.error(f'Error {e}, action may still succeed though')
+    core.error(f'Error {str(e)}, action may still succeed though')
 ```
 
 This library can also wrap chunks of output in foldable groups.
 
 ```python
 from actions_toolkit import core
+import asyncio
 
 # Manually wrap output
 core.start_group('Do some function')
 # do_some_function()
 core.end_group()
 
+
 # Wrap an asynchronous function call
-# TODO
+
+async def do_some_http_request():
+    print('hello world')
+    await asyncio.sleep(2)
+
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(core.group('Do something async', do_some_http_request))
 ```
 
 #### Annotations
@@ -152,11 +162,23 @@ class AnnotationProperties:
     def __init__(self, title: str = None, file: str = None,
                  start_line: int = None, end_line: int = None,
                  start_column: int = None, end_column: int = None):
+        # A title for the annotation.
         self.title = title
+
+        # The path of the file for which the annotation should be created.
         self.file = file
+
+        # The start line for the annotation.
         self.start_line = start_line
+
+        # The end line for the annotation. Defaults to `start_line` when `start_line` is provided.
         self.end_line = end_line
+
+        # The start column for the annotation. Cannot be sent when `start_line` and `end_line` are different values.
         self.start_column = start_column
+
+        # The start column for the annotation. Cannot be sent when `start_line` and `end_line` are different values.
+        # Defaults to `start_column` when `start_column` is provided.
         self.end_column = end_column
 ```
 
@@ -253,4 +275,49 @@ from actions_toolkit import core
 
 pid = core.get_state('pid_to_kill')
 os.kill(int(pid), signal.SIGTERM)
+```
+
+#### OIDC Token
+
+You can use these methods to interact with the GitHub OIDC provider and get a JWT ID token which would help to get
+access token from third party cloud providers.
+
+- **Method Name**: `getIDToken()`
+- **Inputs**: `audience : optional`
+- **Outputs**: A [JWT](https://jwt.io/) ID Token
+
+In action's `main.py`:
+
+```python
+from actions_toolkit import core
+
+
+def get_id_token_action():
+    audience = core.get_input('audience', required=False)
+    id_token1 = core.get_id_token()  # ID Token with default audience
+    id_token2 = core.get_id_token(audience)  # ID token with custom audience
+
+    # this id_token can be used to get access token from third party cloud providers
+
+
+get_id_token_action()
+```
+
+In action's `actions.yml`:
+
+```yaml
+name: 'GetIDToken'
+description: 'Get ID token from Github OIDC provider'
+inputs:
+  audience:  
+    description: 'Audience for which the ID token is intended for'
+    required: false
+outputs:
+  id_token1: 
+    description: 'ID token obtained from OIDC provider'
+  id_token2: 
+    description: 'ID token obtained from OIDC provider'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
 ```
