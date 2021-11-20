@@ -6,7 +6,18 @@ The GitHub Actions ToolKit provides an SDK to make creating actions easier in Py
 [![Supported Versions](https://img.shields.io/pypi/pyversions/actions-toolkit.svg)](https://pypi.org/project/actions-toolkit)
 [![Pypi Versions](https://img.shields.io/pypi/v/actions-toolkit.svg)](https://pypi.python.org/pypi/actions-toolkit)
 [![Contributors](https://img.shields.io/github/contributors/yanglbme/actions-toolkit.svg)](https://github.com/yanglbme/actions-toolkit/graphs/contributors)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit?ref=badge_shield)
+
+## Installation
+
+Action Toolkit is available on PyPI:
+
+```bash
+$ python -m pip install actions-toolkit
+```
+
+Action Toolkit officially supports Python 3.6+.
+
+## Usage
 
 ```python
 >>> import os
@@ -22,24 +33,24 @@ Run successfully.
 ::error::SSL certificates installation failed.
 ```
 
-Read more [here](/docs/core.md).
-
-## Installing Actions Toolkit and Supported Versions
-
-Action Toolkit is available on PyPI:
-
-```bash
-$ python -m pip install actions-toolkit
-```
-
-Action Toolkit officially supports Python 3.6+.
+For more examples and API documentation, please see the [docs](./docs/core.md).
 
 ## Contributing
 
-We welcome contributions.
+Contributions are always welcomed!
+
+Here are the workflow for contributors:
+
+- Fork to your own
+- Clone fork to local repository
+- Create a new branch and work on it
+- Keep your branch in sync
+- Commit your changes (make sure your commit message concise)
+- Push your commits to your forked repository
+- Create a pull request
+
+Please refer to [CONTRIBUTING](./CONTRIBUTION.md) for detailed guidelines.
 
 ## License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE).
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyanglbme%2Factions-toolkit?ref=badge_large)
