@@ -1,18 +1,18 @@
-import setuptools
+from setuptools import setup, find_packages
 
 with open('README.md', 'r') as f:
     long_description = f.read()
 
-setuptools.setup(
+setup(
     name='actions-toolkit',
-    version='0.1.2',
+    version='0.1.3',
     description='🛠 The GitHub ToolKit for developing GitHub Actions in Python.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='yanglbme',
     author_email='contact@yanglibin.info',
     url='https://github.com/yanglbme/actions-toolkit',
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     license='MIT',
     classifiers=[
         'Programming Language :: Python :: 3.6',
@@ -22,6 +22,9 @@ setuptools.setup(
         'Programming Language :: Python :: 3.10',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
+    ],
+    install_requires=[
+        'requests'
     ],
     python_requires='>=3.6',
 )
