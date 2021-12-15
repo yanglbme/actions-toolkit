@@ -1,6 +1,5 @@
 import json
 import os
-from collections import defaultdict
 
 
 class Context:
@@ -19,7 +18,7 @@ class Context:
     graphql_url: str
 
     def __init__(self):
-        self.payload = defaultdict()
+        self.payload = {}
         file = os.getenv('GITHUB_EVENT_PATH')
         if file:
             with open(file, 'r', encoding='utf-8') as f:
@@ -30,8 +29,8 @@ class Context:
         self.workflow = os.getenv('GITHUB_WORKFLOW', '')
         self.action = os.getenv('GITHUB_ACTION', '')
         self.job = os.getenv('GITHUB_JOB', '')
-        self.run_number = int(os.getenv('GITHUB_RUN_NUMBER'))
-        self.run_id = int(os.getenv('GITHUB_RUN_ID'))
+        self.run_number = int(os.getenv('GITHUB_RUN_NUMBER', '0'))
+        self.run_id = int(os.getenv('GITHUB_RUN_ID', '0'))
         self.api_url = os.getenv('GITHUB_API_URL', 'https://api.github.com')
         self.server_url = os.getenv('GITHUB_SERVER_URL', 'https://github.com')
         self.graphql_url = os.getenv('GITHUB_GRAPHQL_URL', 'https://api.github.com/graphql')
@@ -40,7 +39,7 @@ class Context:
         if os.getenv('GITHUB_REPOSITORY'):
             owner, repo = os.getenv('GITHUB_REPOSITORY').split('/')
             return dict(owner=owner, repo=repo)
-        if self.payload['repository']:
+        if self.payload.get('repository'):
             return dict(owner=self.payload['repository']['owner']['login'], repo=self.payload['repository']['name'])
         raise Exception("context.repo requires a GITHUB_REPOSITORY environment variable like 'owner/repo'")
 
