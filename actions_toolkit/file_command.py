@@ -5,7 +5,7 @@ from actions_toolkit.utils import to_command_value
 
 
 def issue_command(command: str, message):
-    file_path = os.environ.get(f'GITHUB_{command}')
+    file_path = os.getenv(f'GITHUB_{command}')
     if not file_path:
         raise Exception(f'Unable to find environment variable '
                         f'for file command {command}')

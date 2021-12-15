@@ -45,7 +45,7 @@ def export_variable(name: str, val):
     converted_val = to_command_value(val)
     os.environ.setdefault(name, converted_val)
 
-    file_path = os.environ.get('GITHUB_ENV') or ''
+    file_path = os.getenv('GITHUB_ENV')
     if file_path:
         delimiter = '_GitHubActionsFileCommandDelimeter_'
         command_value = f'{name}<<{delimiter}{os.linesep}{converted_val}{os.linesep}{delimiter}'
@@ -69,7 +69,7 @@ def add_path(input_path: str):
     :param input_path: value of the path
     :return: void
     """
-    file_path = os.environ.get('GITHUB_PATH') or ''
+    file_path = os.getenv('GITHUB_PATH')
     if file_path:
         issue_file_command('PATH', input_path)
     else:
@@ -84,7 +84,7 @@ def get_input(name: str, **options) -> str:
     Returns an empty string if the value is not defined.
     """
     options = InputOptions(**options)
-    val = os.environ.get(f'INPUT_{name.replace(" ", "_").upper()}') or ''
+    val = os.getenv(f'INPUT_{name.replace(" ", "_").upper()}', '')
     if options.required and not val:
         raise Exception(f'Input required and not supplied: {name}')
     if not options.trim_whitespace:
@@ -153,7 +153,7 @@ def set_failed(message: Union[str, Exception]):
 
 def is_debug() -> bool:
     """Gets whether Actions Step Debug is on or not"""
-    return os.environ.get('RUNNER_DEBUG') == '1'
+    return os.getenv('RUNNER_DEBUG') == '1'
 
 
 def debug(message: str):
@@ -257,7 +257,7 @@ def get_state(name: str) -> str:
     :param name: name of the state to get
     :return: string
     """
-    return os.environ.get(f'STATE_{name}') or ''
+    return os.getenv(f'STATE_{name}', '')
 
 
 def get_id_token(aud: str = None) -> str:

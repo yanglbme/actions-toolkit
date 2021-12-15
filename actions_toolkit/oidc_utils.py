@@ -8,14 +8,14 @@ class OidcClient:
 
     @staticmethod
     def get_request_token() -> str:
-        token = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_TOKEN')
+        token = os.getenv('ACTIONS_ID_TOKEN_REQUEST_TOKEN')
         if not token:
             raise Exception('Unable to get ACTIONS_ID_TOKEN_REQUEST_TOKEN env variable')
         return token
 
     @staticmethod
     def get_id_token_url() -> str:
-        runtime_url = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_URL')
+        runtime_url = os.getenv('ACTIONS_ID_TOKEN_REQUEST_URL')
         if not runtime_url:
             raise Exception('Unable to get ACTIONS_ID_TOKEN_REQUEST_URL env variable')
         return runtime_url

@@ -2,7 +2,7 @@
 
 The GitHub Actions ToolKit provides an SDK to make creating actions easier in Python.
 
-[![Downloads](https://pepy.tech/badge/actions-toolkit/month)](https://pepy.tech/project/actions-toolkit)
+[![Downloads](https://pepy.tech/badge/actions-toolkit)](https://pepy.tech/project/actions-toolkit)
 [![Supported Versions](https://img.shields.io/pypi/pyversions/actions-toolkit.svg)](https://pypi.org/project/actions-toolkit)
 [![Pypi Versions](https://img.shields.io/pypi/v/actions-toolkit.svg)](https://pypi.python.org/pypi/actions-toolkit)
 [![Contributors](https://img.shields.io/github/contributors/yanglbme/actions-toolkit.svg)](https://github.com/yanglbme/actions-toolkit/graphs/contributors)
