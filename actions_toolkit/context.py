@@ -35,20 +35,20 @@ class Context:
         self.server_url = os.getenv('GITHUB_SERVER_URL', 'https://github.com')
         self.graphql_url = os.getenv('GITHUB_GRAPHQL_URL', 'https://api.github.com/graphql')
 
-    def get_repo(self) -> dict:
+    def _repo(self):
         if os.getenv('GITHUB_REPOSITORY'):
             owner, repo = os.getenv('GITHUB_REPOSITORY').split('/')
-            return dict(owner=owner, repo=repo)
+            return owner, repo
         if self.payload.get('repository'):
-            return dict(owner=self.payload['repository']['owner']['login'], repo=self.payload['repository']['name'])
-        raise Exception("context.repo requires a GITHUB_REPOSITORY environment variable like 'owner/repo'")
+            return self.payload['repository']['owner']['login'], self.payload['repository']['name']
+        return None, None
+
+    def get_repo(self) -> dict:
+        owner, repo = self._repo()
+        return dict(owner=owner, repo=repo)
 
     def get_issue(self) -> dict:
         payload = self.payload
         actor = payload.get('issue') or payload.get('pull_request') or payload
-        repo = self.get_repo()
-        return {
-            'owner': repo.get('owner'),
-            'repo': repo.get('repo'),
-            'number': actor.get('number')
-        }
+        owner, repo = self._repo()
+        return dict(owner=owner, repo=repo, number=actor.get('number'))

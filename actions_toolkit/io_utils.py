@@ -104,8 +104,7 @@ async def try_get_executable_path(file_path: str, extensions: List[str]):
 
 
 def normalize_separators(p: str) -> str:
-    p = p or ''
-    return os.path.normpath(p)
+    return os.path.normpath(p or '')
 
 
 def is_unix_executable(file_path) -> bool:

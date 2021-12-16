@@ -1,4 +1,6 @@
 import json
+import os
+from typing import List
 
 
 class AnnotationProperties:
@@ -25,6 +27,20 @@ class AnnotationProperties:
         self.end_column = end_column
 
 
+class OctokitOptions:
+    def __init__(self, auth_strategy=None, auth=None, user_agent: str = None,
+                 previews: List[str] = None, base_url: str = None, log=None,
+                 request=None, time_zone: str = None):
+        self.auth_strategy = auth_strategy
+        self.auth = auth
+        self.user_agent = user_agent
+        self.previews = previews
+        self.base_url = base_url
+        self.log = log
+        self.request = request
+        self.time_zone = time_zone
+
+
 def to_command_value(input_val) -> str:
     """
     Sanitizes an input into a string so it can be passed into issueCommand safely
@@ -49,3 +65,14 @@ def to_command_properties(annotation_properties: AnnotationProperties) -> dict:
         'col': annotation_properties.start_column,
         'endColumn': annotation_properties.end_column
     }
+
+
+def get_api_base_url() -> str:
+    return os.getenv('GITHUB_API_URL', 'https://api.github.com')
+
+
+def get_auth_string(token: str, **options) -> str:
+    options = OctokitOptions(**options)
+    if not token and not options.auth:
+        raise Exception('Parameter token or opts.auth is required')
+    return options.auth if isinstance(options.auth, str) else f'token {token}'
