@@ -39,9 +39,10 @@ class Context:
         if os.getenv('GITHUB_REPOSITORY'):
             owner, repo = os.getenv('GITHUB_REPOSITORY').split('/')
             return owner, repo
-        if self.payload.get('repository'):
-            return self.payload['repository']['owner']['login'], self.payload['repository']['name']
-        return None, None
+        repository = self.payload.get('repository')
+        if not repository:
+            return None, None
+        return repository['owner']['login'], repository['name']
 
     def get_repo(self) -> dict:
         owner, repo = self._repo()

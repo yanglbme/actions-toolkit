@@ -74,7 +74,7 @@ def add_path(input_path: str):
         issue_file_command('PATH', input_path)
     else:
         issue_command('add-path', {}, input_path)
-    os.environ.setdefault('PATH', f'{input_path}{os.pathsep}{os.environ.get("PATH")}')
+    os.environ.setdefault('PATH', f'{input_path}{os.pathsep}{os.getenv("PATH")}')
 
 
 def get_input(name: str, **options) -> str:
@@ -84,7 +84,8 @@ def get_input(name: str, **options) -> str:
     Returns an empty string if the value is not defined.
     """
     options = InputOptions(**options)
-    val = os.getenv(f'INPUT_{name.replace(" ", "_").upper()}', '')
+    name = name.replace(' ', '_').upper()
+    val = os.getenv(f'INPUT_{name}', '')
     if options.required and not val:
         raise Exception(f'Input required and not supplied: {name}')
     if not options.trim_whitespace:
@@ -170,9 +171,9 @@ def error(message: Union[str, Exception], **properties):
     Adds an error issue
     :param message: error issue message. Errors will be converted to string via str()
     """
-    properties = AnnotationProperties(**properties)
+    properties = AnnotationProperties(**properties) if properties else properties
     if isinstance(message, Exception):
-        message = str(message)
+        message = f'Error: {str(message)}'
     issue_command('error', to_command_properties(properties), message)
 
 
@@ -181,9 +182,9 @@ def warning(message: Union[str, Exception], **properties):
     Adds a warning issue
     :param message: warning issue message. Errors will be converted to string via str()
     """
-    properties = AnnotationProperties(**properties)
+    properties = AnnotationProperties(**properties) if properties else properties
     if isinstance(message, Exception):
-        message = str(message)
+        message = f'Error: {str(message)}'
     issue_command('warning', to_command_properties(properties), message)
 
 
@@ -192,7 +193,9 @@ def notice(message: Union[str, Exception], **properties):
     Adds a notice issue
     :param message: notice issue message. Errors will be converted to string via str()
     """
-    properties = AnnotationProperties(**properties)
+    properties = AnnotationProperties(**properties) if properties else properties
+    if isinstance(message, Exception):
+        message = f'Error: {str(message)}'
     issue_command('notice', to_command_properties(properties), message)
 
 
