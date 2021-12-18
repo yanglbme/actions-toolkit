@@ -21,7 +21,7 @@ class Context:
         self.payload = {}
         file = os.getenv('GITHUB_EVENT_PATH')
         if file:
-            with open(file, 'r', encoding='utf-8') as f:
+            with open(file, 'r', encoding='utf-8', newline='') as f:
                 self.payload = json.load(f)
         self.event_name = os.getenv('GITHUB_EVENT_NAME', '')
         self.sha = os.getenv('GITHUB_SHA', '')

@@ -43,7 +43,7 @@ def export_variable(name: str, val):
     :return: void
     """
     converted_val = to_command_value(val)
-    os.environ.setdefault(name, converted_val)
+    os.environ[name] = converted_val
 
     file_path = os.getenv('GITHUB_ENV')
     if file_path:
@@ -74,7 +74,7 @@ def add_path(input_path: str):
         issue_file_command('PATH', input_path)
     else:
         issue_command('add-path', {}, input_path)
-    os.environ.setdefault('PATH', f'{input_path}{os.pathsep}{os.getenv("PATH")}')
+    os.environ['PATH'] = f'{input_path}{os.pathsep}{os.getenv("PATH")}'
 
 
 def get_input(name: str, **options) -> str:

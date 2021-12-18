@@ -1,3 +1,4 @@
+import asyncio
 import io
 import os
 import sys
@@ -12,7 +13,7 @@ test_env_vars = {
     'my secret': '',
     'special char secret \r\n];': '',
     'my secret2': '',
-    'PATH': f'path1${os.pathsep}path2',
+    'PATH': f'path1{os.pathsep}path2',
 
     # Set inputs
     'INPUT_MY_INPUT': 'val',
@@ -42,6 +43,10 @@ test_env_vars = {
 for k, v in test_env_vars.items():
     os.environ[k] = v
 
+file_path = os.path.join(os.getcwd(), 'test')
+if not os.path.isdir(file_path):
+    os.makedirs(file_path)
+
 
 def call(func, *args, **kw):
     output = io.StringIO()
@@ -50,6 +55,65 @@ def call(func, *args, **kw):
     sys.stdout = sys.__stdout__
     return output.getvalue()
 
+
+def create_file_command_file(command: str):
+    path = os.path.join(file_path, command)
+    os.environ[f'GITHUB_{command}'] = path
+    with open(path, 'a', encoding='utf-8', newline='') as fs:
+        fs.write('')
+
+
+def verify_file_command(command: str, expected_contents: str):
+    path = os.path.join(file_path, command)
+    with open(path, 'r', encoding='utf-8', newline='') as fs:
+        contents = fs.read()
+        assert contents == expected_contents
+    os.unlink(path)
+
+
+assert call(core.export_variable, 'my var', 'var val') == f'::set-env name=my var::var val{os.linesep}'
+
+assert call(core.export_variable, 'special char var \r\n,:',
+            'special val') == f'::set-env name=special char var %0D%0A%2C%3A::special val{os.linesep}'
+assert os.getenv('special char var \r\n,:') == 'special val'
+
+assert call(core.export_variable, 'my var2', 'var val\r\n') == f'::set-env name=my var2::var val%0D%0A{os.linesep}'
+assert os.getenv('my var2') == 'var val\r\n'
+
+assert call(core.export_variable, 'my var', True) == f'::set-env name=my var::true{os.linesep}'
+
+assert call(core.export_variable, 'my var', 5) == f'::set-env name=my var::5{os.linesep}'
+
+command = 'ENV'
+create_file_command_file(command)
+core.export_variable('my var', 'var val')
+verify_file_command(command,
+                    f'my var<<_GitHubActionsFileCommandDelimeter_{os.linesep}var val'
+                    f'{os.linesep}_GitHubActionsFileCommandDelimeter_{os.linesep}')
+
+command = 'ENV'
+create_file_command_file(command)
+core.export_variable('my var', True)
+verify_file_command(command,
+                    f'my var<<_GitHubActionsFileCommandDelimeter_{os.linesep}true'
+                    f'{os.linesep}_GitHubActionsFileCommandDelimeter_{os.linesep}')
+
+command = 'ENV'
+create_file_command_file(command)
+core.export_variable('my var', 5)
+verify_file_command(command,
+                    f'my var<<_GitHubActionsFileCommandDelimeter_{os.linesep}5'
+                    f'{os.linesep}_GitHubActionsFileCommandDelimeter_{os.linesep}')
+
+assert call(core.set_secret, 'secret val') == f'::add-mask::secret val{os.linesep}'
+
+command = 'PATH'
+create_file_command_file(command)
+core.add_path('myPath')
+assert os.getenv('PATH') == f'myPath{os.pathsep}path1{os.pathsep}path2'
+verify_file_command(command, f'myPath{os.linesep}')
+
+assert call(core.add_path, 'myPath') == f'::add-path::myPath{os.linesep}'
 
 assert core.get_input('my input') == 'val'
 
@@ -150,7 +214,21 @@ assert call(core.start_group, 'my-group') == f'::group::my-group{os.linesep}'
 
 assert call(core.end_group) == f'::endgroup::{os.linesep}'
 
+
+async def f():
+    async def in_group():
+        sys.stdout.write('in my group\n')
+        return True
+
+    result = await core.group('mygroup', in_group)
+    assert result is True
+
+
+assert call(asyncio.run, f()) == f'::group::mygroup{os.linesep}in my group\n::endgroup::{os.linesep}'
+
 assert call(core.debug, 'Debug') == f'::debug::Debug{os.linesep}'
+
+assert call(core.debug, '\r\ndebug\n') == f'::debug::%0D%0Adebug%0A{os.linesep}'
 
 assert call(core.save_state, 'state_1', 'some value') == f'::save-state name=state_1::some value{os.linesep}'
 
