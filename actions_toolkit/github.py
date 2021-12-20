@@ -1,6 +1,16 @@
 import json
 import os
+import sys
 from collections import namedtuple
+from string import Template
+
+import requests
+
+t = sys.path[0]
+sys.path.remove(t)
+from github import Github
+
+sys.path.insert(0, t)
 
 Repo = namedtuple('Repo', ['owner', 'repo'])
 Issue = namedtuple('Issue', ['owner', 'repo', 'number'])
@@ -61,3 +71,25 @@ class Context:
     @property
     def issue(self):
         return Issue(*self._issue())
+
+
+class Octokit:
+    def __init__(self, token):
+        self.token = token
+        self.headers = {
+            'Authorization': f'Bearer {self.token}'
+        }
+        self.rest = Github(token)
+
+    def graphql(self, query: str, variables: dict) -> dict:
+        q = {
+            'query': Template(query).substitute(variables)
+        }
+        resp = requests.post('https://api.github.com/graphql', json=q, headers=self.headers)
+        if resp.status_code != 200:
+            raise Exception(f'Query failed to run by returning code of {resp.status_code}. {query}')
+        return resp.json()
+
+
+def get_octokit(token):
+    return Octokit(token)

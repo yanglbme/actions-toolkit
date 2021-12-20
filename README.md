@@ -33,7 +33,7 @@ Run successfully.
 ::error::SSL certificates installation failed.
 ```
 
-For more examples and API documentation, please see the [docs](./docs/core.md).
+For more examples and API documentation, please see the [core](./docs/core.md) & [github](./docs/github.md).
 
 ## Contributing
 
