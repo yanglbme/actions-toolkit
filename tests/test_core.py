@@ -69,6 +69,7 @@ def verify_file_command(command: str, expected_contents: str):
         contents = fs.read()
         assert contents == expected_contents
     os.unlink(path)
+    os.environ.pop(f'GITHUB_{command}', None)
 
 
 assert call(core.export_variable, 'my var', 'var val') == f'::set-env name=my var::var val{os.linesep}'

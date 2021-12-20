@@ -1,5 +1,9 @@
 import json
 import os
+from collections import namedtuple
+
+Repo = namedtuple('Repo', ['owner', 'repo'])
+Issue = namedtuple('Issue', ['owner', 'repo', 'number'])
 
 
 class Context:
@@ -44,12 +48,16 @@ class Context:
             return None, None
         return repository['owner']['login'], repository['name']
 
-    def get_repo(self) -> dict:
-        owner, repo = self._repo()
-        return dict(owner=owner, repo=repo)
-
-    def get_issue(self) -> dict:
+    def _issue(self):
         payload = self.payload
         actor = payload.get('issue') or payload.get('pull_request') or payload
         owner, repo = self._repo()
-        return dict(owner=owner, repo=repo, number=actor.get('number'))
+        return owner, repo, actor.get('number')
+
+    @property
+    def repo(self):
+        return Repo(*self._repo())
+
+    @property
+    def issue(self):
+        return Issue(*self._issue())
