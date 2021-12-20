@@ -113,8 +113,9 @@ except Exception as e:
 This library can also wrap chunks of output in foldable groups.
 
 ```python
-from actions_toolkit import core
 import asyncio
+
+from actions_toolkit import core
 
 # Manually wrap output
 core.start_group('Do some function')
@@ -122,15 +123,12 @@ core.start_group('Do some function')
 core.end_group()
 
 
-# Wrap an asynchronous function call
-
 async def do_some_http_request():
     print('hello world')
     await asyncio.sleep(2)
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(core.group('Do something async', do_some_http_request))
+asyncio.run(core.group('Do something async', do_some_http_request))
 ```
 
 #### Annotations
@@ -306,18 +304,18 @@ get_id_token_action()
 In action's `actions.yml`:
 
 ```yaml
-name: 'GetIDToken'
-description: 'Get ID token from Github OIDC provider'
+name: "GetIDToken"
+description: "Get ID token from Github OIDC provider"
 inputs:
-  audience:  
-    description: 'Audience for which the ID token is intended for'
+  audience:
+    description: "Audience for which the ID token is intended for"
     required: false
 outputs:
-  id_token1: 
-    description: 'ID token obtained from OIDC provider'
-  id_token2: 
-    description: 'ID token obtained from OIDC provider'
+  id_token1:
+    description: "ID token obtained from OIDC provider"
+  id_token2:
+    description: "ID token obtained from OIDC provider"
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "docker"
+  image: "Dockerfile"
 ```
