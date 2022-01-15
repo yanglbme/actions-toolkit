@@ -31,6 +31,7 @@ test_env_vars = {
     'INPUT_WITH_TRAILING_WHITESPACE': '  some val  ',
 
     'INPUT_MY_INPUT_LIST': 'val1\nval2\nval3',
+    'INPUT_LIST_WITH_TRAILING_WHITESPACE': '  val1  \n  val2  \n  ',
 
     # Save inputs
     'STATE_TEST_1': 'state_val',
@@ -135,8 +136,6 @@ assert core.get_input('special chars_\'\t"\\') == '\'\t"\\ response'
 
 assert core.get_input('multiple spaces variable') == 'I have multiple spaces'
 
-assert core.get_multiline_input('my input list') == ['val1', 'val2', 'val3']
-
 assert core.get_input('with trailing whitespace') == 'some val'
 
 assert core.get_input('with trailing whitespace', trim_whitespace=True) == 'some val'
@@ -153,6 +152,15 @@ assert core.get_boolean_input('boolean input true3') is True
 assert core.get_boolean_input('boolean input false1') is False
 assert core.get_boolean_input('boolean input false2') is False
 assert core.get_boolean_input('boolean input false3') is False
+
+assert core.get_multiline_input('my input list') == ['val1', 'val2', 'val3']
+
+assert core.get_multiline_input('list with trailing whitespace') == ['val1', 'val2']
+
+assert core.get_multiline_input('list with trailing whitespace', trim_whitespace=True) == ['val1', 'val2']
+
+assert core.get_multiline_input('list with trailing whitespace', trim_whitespace=False) == ['  val1  ', '  val2  ',
+                                                                                            '  ']
 
 try:
     core.get_boolean_input('wrong boolean input')

@@ -97,7 +97,9 @@ def get_multiline_input(name: str, **options) -> List[str]:
     """
     Gets the values of an multiline input.  Each value is also trimmed.
     """
-    return list(filter(lambda x: x != '', get_input(name, **options).split("\n")))
+    inputs = list(filter(lambda x: x != '', get_input(name, **options).split("\n")))
+    options = InputOptions(**options)
+    return [x.strip() for x in inputs] if options.trim_whitespace else inputs
 
 
 def get_boolean_input(name: str, **options) -> bool:
