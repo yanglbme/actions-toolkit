@@ -88,9 +88,7 @@ def get_input(name: str, **options) -> str:
     val = os.getenv(f'INPUT_{name}', '')
     if options.required and not val:
         raise Exception(f'Input required and not supplied: {name}')
-    if not options.trim_whitespace:
-        return val
-    return val.strip()
+    return val.strip() if options.trim_whitespace else val
 
 
 def get_multiline_input(name: str, **options) -> List[str]:
@@ -109,12 +107,10 @@ def get_boolean_input(name: str, **options) -> bool:
     The return value is also in boolean type.
     ref: https://yaml.org/spec/1.2/spec.html#id2804923
     """
-    true_value = ['true', 'True', 'TRUE']
-    false_value = ['false', 'False', 'FALSE']
     val = get_input(name, **options)
-    if val in true_value:
+    if val in {'true', 'True', 'TRUE'}:
         return True
-    if val in false_value:
+    if val in {'false', 'False', 'FALSE'}:
         return False
     raise TypeError(f'Input does not meet YAML 1.2 "Core Schema" specification: {name}\n'
                     f'Support boolean input list: `true | True | TRUE | false | False | FALSE`')
