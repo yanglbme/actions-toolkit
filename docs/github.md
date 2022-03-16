@@ -2,13 +2,17 @@
 
 ## Usage
 
-Returns an authenticated Octokit client that follows the machine proxy settings and correctly sets GHES base urls.
-See https://octokit.github.io/rest.js for the API.
+Returns an authenticated Octokit client that follows the machine proxy settings and correctly sets GHES base urls. See https://octokit.github.io/rest.js for the API.
 
 ```python
 from actions_toolkit import core
 from actions_toolkit import github
 
+
+# This should be a token with access to your repository scoped in as a secret.
+# The YML workflow will need to set myToken with the GitHub Secret Token
+# myToken: ${{ secrets.GITHUB_TOKEN }}
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions/authenticating-with-the-github_token#about-the-github_token-secret
 my_token = core.get_input('myToken')
 octokit = github.get_octokit(my_token)
 
