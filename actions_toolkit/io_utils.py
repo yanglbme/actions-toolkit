@@ -90,7 +90,7 @@ async def try_get_executable_path(file_path: str, extensions: List[str]):
         stats = await stat(file_path)
     except IOError as e:
         if e.errno != errno.ENOENT:
-            logging.log(f'Unexpected error attempting to determine if executable file exists "{file_path}": {e}')
+            logging.warning(f'Unexpected error attempting to determine if executable file exists "{file_path}": {e}')
     if stats and Path(file_path).is_file():
         if IS_WINDOWS:
             upper_ext = Path(file_path).suffix.upper()

@@ -40,14 +40,8 @@ class Command:
         cmd_str = CMD_STRING + self.command
         if self.properties and len(self.properties) > 0:
             cmd_str += ' '
-            first = True
-            for k, v in self.properties.items():
-                if v:
-                    if first:
-                        first = False
-                    else:
-                        cmd_str += ','
-                    cmd_str += f'{k}={escape_property(v)}'
+            kv = [f'{k}={escape_property(v)}' for k, v in self.properties.items()]
+            cmd_str += ','.join(kv)
         cmd_str += f'{CMD_STRING}{escape_data(self.message)}'
         return cmd_str
 
