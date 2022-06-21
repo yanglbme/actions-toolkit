@@ -307,3 +307,30 @@ runs:
   using: "docker"
   image: "Dockerfile"
 ```
+
+#### Filesystem path helpers
+
+You can use these methods to manipulate file paths across operating systems.
+
+The `to_posix_path` function converts input paths to Posix-style (Linux) paths.
+The `to_win32_path` function converts input paths to Windows-style paths. These 
+functions work independently of the underlying runner operating system.
+
+```python
+from actions_toolkit import core
+
+core.to_posix_path('\\foo\\bar')   # => /foo/bar
+core.to_win32_path('/foo/bar')     # => \foo\bar
+```
+
+The `to_platform_path` function converts input paths to the expected value on the runner's operating system.
+
+```python
+from actions_toolkit import core
+
+# On a Windows runner.
+core.to_platform_path('/foo/bar')      # => \foo\bar
+
+# On a Linux runner.
+core.to_platform_path('\\foo\\bar')    # => /foo/bar
+```
