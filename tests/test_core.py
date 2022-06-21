@@ -256,3 +256,23 @@ os.environ.pop('RUNNER_DEBUG', None)
 assert call(core.set_command_echo, True) == f'::echo::on{os.linesep}'
 
 assert call(core.set_command_echo, False) == f'::echo::off{os.linesep}'
+
+assert core.to_posix_path('') == ''
+assert core.to_posix_path('foo') == 'foo'
+assert core.to_posix_path('foo/bar/baz') == 'foo/bar/baz'
+assert core.to_posix_path('/foo/bar/baz') == '/foo/bar/baz'
+assert core.to_posix_path('foo\\bar\\baz') == 'foo/bar/baz'
+assert core.to_posix_path('\\foo\\bar\\baz') == '/foo/bar/baz'
+assert core.to_posix_path('\\foo/bar/baz') == '/foo/bar/baz'
+
+assert core.to_win32_path('') == ''
+assert core.to_win32_path('foo') == 'foo'
+assert core.to_win32_path('foo/bar/baz') == 'foo\\bar\\baz'
+assert core.to_win32_path('/foo/bar/baz') == '\\foo\\bar\\baz'
+assert core.to_win32_path('\\foo\\bar\\baz') == '\\foo\\bar\\baz'
+assert core.to_win32_path('\\foo/bar\\baz') == '\\foo\\bar\\baz'
+
+assert core.to_platform_path('') == ''
+assert core.to_platform_path('foo') == 'foo'
+assert core.to_platform_path('foo/bar/baz') == os.sep.join(['foo', 'bar', 'baz'])
+assert core.to_platform_path('foo\\bar\\baz') == os.sep.join(['foo', 'bar', 'baz'])
