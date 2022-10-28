@@ -38,8 +38,13 @@ test_env_vars = {
 
     # File Commands
     'GITHUB_PATH': '',
-    'GITHUB_ENV': ''
+    'GITHUB_ENV': '',
+    'GITHUB_OUTPUT': '',
+    'GITHUB_STATE': ''
 }
+
+uuid = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+delimiter = f'ghadelimiter_{uuid}'
 
 for k, v in test_env_vars.items():
     os.environ[k] = v
@@ -68,6 +73,8 @@ def verify_file_command(command: str, expected_contents: str):
     path = os.path.join(file_path, command)
     with open(path, 'r', encoding='utf-8', newline='') as fs:
         contents = fs.read()
+        if 'ghadelimiter_' in contents:
+            contents = contents.replace(contents.split()[1][5:], delimiter)
         assert contents == expected_contents
     os.unlink(path)
     os.environ.pop(f'GITHUB_{command}', None)
@@ -90,22 +97,22 @@ command = 'ENV'
 create_file_command_file(command)
 core.export_variable('my var', 'var val')
 verify_file_command(command,
-                    f'my var<<_GitHubActionsFileCommandDelimeter_{os.linesep}var val'
-                    f'{os.linesep}_GitHubActionsFileCommandDelimeter_{os.linesep}')
+                    f'my var<<{delimiter}{os.linesep}var val'
+                    f'{os.linesep}{delimiter}{os.linesep}')
 
 command = 'ENV'
 create_file_command_file(command)
 core.export_variable('my var', True)
 verify_file_command(command,
-                    f'my var<<_GitHubActionsFileCommandDelimeter_{os.linesep}true'
-                    f'{os.linesep}_GitHubActionsFileCommandDelimeter_{os.linesep}')
+                    f'my var<<{delimiter}{os.linesep}true'
+                    f'{os.linesep}{delimiter}{os.linesep}')
 
 command = 'ENV'
 create_file_command_file(command)
 core.export_variable('my var', 5)
 verify_file_command(command,
-                    f'my var<<_GitHubActionsFileCommandDelimeter_{os.linesep}5'
-                    f'{os.linesep}_GitHubActionsFileCommandDelimeter_{os.linesep}')
+                    f'my var<<{delimiter}{os.linesep}5'
+                    f'{os.linesep}{delimiter}{os.linesep}')
 
 assert call(core.set_secret, 'secret val') == f'::add-mask::secret val{os.linesep}'
 
@@ -176,6 +183,21 @@ assert call(core.set_output, 'some output', 'some value') == \
 assert call(core.set_output, 'some output', False) == f'{os.linesep}::set-output name=some output::false{os.linesep}'
 
 assert call(core.set_output, 'some output', 1.01) == f'{os.linesep}::set-output name=some output::1.01{os.linesep}'
+
+command = 'OUTPUT'
+create_file_command_file(command)
+core.set_output('my out', 'out val')
+verify_file_command(command, f'my out<<{delimiter}{os.linesep}out val{os.linesep}{delimiter}{os.linesep}')
+
+command = 'OUTPUT'
+create_file_command_file(command)
+core.set_output('my out', True)
+verify_file_command(command, f'my out<<{delimiter}{os.linesep}true{os.linesep}{delimiter}{os.linesep}')
+
+command = 'OUTPUT'
+create_file_command_file(command)
+core.set_output('my out', 5)
+verify_file_command(command, f'my out<<{delimiter}{os.linesep}5{os.linesep}{delimiter}{os.linesep}')
 
 assert call(core.error, 'Error message') == f'::error::Error message{os.linesep}'
 

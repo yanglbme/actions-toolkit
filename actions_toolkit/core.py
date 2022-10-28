@@ -4,7 +4,7 @@ import sys
 from typing import List, Union
 
 from actions_toolkit.command import issue_command, issue
-from actions_toolkit.file_command import issue_command as issue_file_command
+from actions_toolkit.file_command import issue_file_command, prepare_key_value_message
 from actions_toolkit.oidc_utils import OidcClient
 from actions_toolkit.utils import to_command_value, to_command_properties, AnnotationProperties
 
@@ -47,11 +47,8 @@ def export_variable(name: str, val):
 
     file_path = os.getenv('GITHUB_ENV')
     if file_path:
-        delimiter = '_GitHubActionsFileCommandDelimeter_'
-        command_value = f'{name}<<{delimiter}{os.linesep}{converted_val}{os.linesep}{delimiter}'
-        issue_file_command('ENV', command_value)
-    else:
-        issue_command('set-env', dict(name=name), converted_val)
+        return issue_file_command('ENV', prepare_key_value_message(name, val))
+    issue_command('set-env', dict(name=name), converted_val)
 
 
 def set_secret(secret: str):
@@ -123,8 +120,11 @@ def set_output(name: str, value):
     :param value: value to store. Non-string values will be converted to a string via json.dumps
     :return: void
     """
+    file_path = os.getenv('GITHUB_OUTPUT') or ''
+    if file_path:
+        return issue_file_command('OUTPUT', prepare_key_value_message(name, value))
     sys.stdout.write(os.linesep)
-    issue_command('set-output', dict(name=name), value)
+    issue_command('set-output', dict(name=name), to_command_value(value))
 
 
 def set_command_echo(enabled: bool):
@@ -249,7 +249,10 @@ def save_state(name: str, value):
     :param value: value to store. Non-string values will be converted to a string via json.dumps
     :return: void
     """
-    issue_command('save-state', dict(name=name), value)
+    file_path = os.getenv('GITHUB_STATE') or ''
+    if file_path:
+        return issue_file_command('STATE', prepare_key_value_message(name, value))
+    issue_command('save-state', dict(name=name), to_command_value(value))
 
 
 def get_state(name: str) -> str:

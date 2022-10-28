@@ -22,7 +22,7 @@ class AnnotationProperties:
         # The start column for the annotation. Cannot be sent when `start_line` and `end_line` are different values.
         self.start_column = start_column
 
-        # The start column for the annotation. Cannot be sent when `start_line` and `end_line` are different values.
+        # The end column for the annotation. Cannot be sent when `start_line` and `end_line` are different values.
         # Defaults to `start_column` when `start_column` is provided.
         self.end_column = end_column
 
