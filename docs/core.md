@@ -130,7 +130,7 @@ This library has 3 methods that will produce [annotations](https://docs.github.c
 ```python
 from actions_toolkit import core
 
-core.error('This is a bad error. This will also fail the build.')
+core.error('This is a bad error, action may still succeed though.')
 
 core.warning('Something went wrong, but it\'s not bad enough to fail the build.')
 
